@@ -1,0 +1,28 @@
+<h1>Welcome to the about us page.</h1>
+
+
+<table border="1" cellpadding="10" cellspacing="0">
+    <tr>
+        <th>S. No.</th>
+        <th>Trainee</th>
+        <th>Action</th>
+    </tr>
+
+    {% set index = 0 %}
+    {% for trainee in trainees %}
+
+        <tr>
+            <td>{{ index + 1 }}</td>
+            <td>{{ trainee }}</td>
+            <td>
+                <a href="{{ path('app_detail', { 'num' : index + 1 }) }}">View Detail</a>
+            </td>
+        </tr>
+
+        {% set index = index + 1 %}
+    {% endfor %}
+
+</table>
+
+
+<a href="{{ path('dashboard_action') }}">Jump to homepage</a>
