@@ -1,0 +1,30 @@
+<h1>Add trainee</h1>
+
+<style>
+
+    fieldset {
+        width: 300px;
+        margin-bottom: 10px;
+    }
+
+</style>
+
+<a href="{{ path('app_trainee') }}">Goto Trainee List</a>
+
+<br /> <br />
+
+<form action="{{ path('app_trainee_new') }}" method="POST">
+    
+    <fieldset>
+        <legend>Name: </legend>
+        <input type="text" id="name" name="name" required><br><br>
+    </fieldset>
+
+    <fieldset>
+        <legend>Email: </legend>
+        <input type="email" id="email" name="email" required><br><br>
+    </fieldset>
+    <fieldset>
+        <button type="submit">Submit</button>
+    </fieldset>
+</form>
