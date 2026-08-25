@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\Trainee;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -43,5 +45,28 @@ final class AboutController extends AbstractController
                 'name' => $trainee
             ]
         ]);
+    }
+
+    // EntityManagerInterface $entityManager
+
+    #[Route('/create-trainee', name: 'app_create_trainee')]
+    public function createTrainee(EntityManagerInterface $entityManager): Response
+    {
+        $trainee = new Trainee();
+        $trainee->setName("Ritesh");
+        $trainee->setEmail("ritesh@example.com");
+
+        $entityManager->persist($trainee);
+        $entityManager->flush();
+
+        dd("Trainee created with ID: " . $trainee->getId());
+    }
+
+    #[Route('/list-trainees', name: 'app_list_trainees')]
+    public function listTrainees(EntityManagerInterface $entityManager): Response
+    {
+        $trainees = $entityManager->getRepository(Trainee::class)->findAll();
+
+        dd($trainees);
     }
 }
