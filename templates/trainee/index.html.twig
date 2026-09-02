@@ -1,0 +1,41 @@
+<h1>Welcome to the about us page.</h1>
+
+
+<a href="{{ path('app_trainee_new') }}">Add New Trainee</a>
+
+<br /> <br />
+
+{% for message in app.flashes('traineeCreated') %}
+    <p>
+        {{ message }}
+    </p>
+    <br /> <br />
+{% endfor %}
+
+<table border="1" cellpadding="10" cellspacing="0">
+    <tr>
+        <th>Trainee ID</th>
+        <th>Trainee</th>
+        <th>Email</th>
+        <th>Created At</th>
+        <th>Action</th>
+    </tr>
+
+    {% if trainees is defined %}
+        {% for trainee in trainees %}
+            <tr>
+                <td>{{ trainee.id }}</td>
+                <td>{{ trainee.name }}</td>
+                <td>{{ trainee.email }}</td>
+                <td>{{ trainee.createdAt | date('Y-m-d') }}</td>
+                <td>
+                    <a href="{{ path('app_trainee_remove', { 'id' : trainee.id }) }}">Delete</a>
+                </td>
+            </tr>
+        {% endfor %}
+    {% endif %}
+
+</table>
+
+
+<a href="{{ path('dashboard_action') }}">Jump to homepage</a>
