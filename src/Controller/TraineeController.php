@@ -13,10 +13,15 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class TraineeController extends AbstractController
 {
-    #[Route('/trainee', name: 'app_trainee')]
-    public function index(EntityManagerInterface $entityManager): Response
+    public function __construct(private \App\Service\TraineeService $traineeService, private EntityManagerInterface $entityManager)
     {
-        $trainees = $entityManager
+        
+    }
+
+    #[Route('/trainee', name: 'app_trainee')]
+    public function index(): Response
+    {
+        $trainees = $this->entityManager
             ->getRepository('App\Entity\Trainee')
             ->findAll();
 
@@ -27,7 +32,7 @@ final class TraineeController extends AbstractController
     }
 
     #[Route('/trainee/new', name: 'app_trainee_new', methods: ['GET', 'POST'])]
-    public function newTrainee(Request $request, EntityManagerInterface $entityManager): Response
+    public function newTrainee(Request $request): Response
     {
 
         $requestData = $request->request->all();
@@ -37,8 +42,7 @@ final class TraineeController extends AbstractController
             $trainee->setName($requestData['name']);
             $trainee->setEmail($requestData['email']);
 
-            $entityManager->persist($trainee);
-            $entityManager->flush(); // db save
+            $this->traineeService->createNewTrainee($trainee);
 
             return $this->redirectToRoute('app_trainee');
         }
@@ -49,22 +53,15 @@ final class TraineeController extends AbstractController
     }
 
     #[Route('/trainee/remove/{id}', name: 'app_trainee_remove', methods: ['GET'])]
-    public function removeTrainee(Request $request, EntityManagerInterface $entityManager, int $id): Response
+    public function removeTrainee(Request $request, int $id): Response
     {
-        $trainee = $entityManager->getRepository(Trainee::class)->find($id);
-
-        if(!$trainee) {
-            throw $this->createNotFoundException('Trainee not found');
-        }
-
-        $entityManager->remove($trainee);
-        $entityManager->flush(); // db save
+        $this->traineeService->removeTrainee('App\Entity\Trainee', $id);
 
         return $this->redirectToRoute('app_trainee');
     }
 
     #[Route('/trainee/create', name: 'app_trainee_new', methods: ['GET', 'POST'])]
-    public function createTrainee(Request $request, EntityManagerInterface $entityManager): Response
+    public function createTrainee(Request $request): Response
     {
         $trainee = new Trainee();
         $form = $this->createForm(TraineeType::class, $trainee);
@@ -76,9 +73,7 @@ final class TraineeController extends AbstractController
             $traineeData = $form->getData();
 
             if(isset($traineeData)) {
-                $entityManager->persist($traineeData);
-                $entityManager->flush(); // db save
-
+                $this->traineeService->createNewTrainee($traineeData);
 
                 $this->addFlash(
                     'traineeCreated',
